@@ -1004,7 +1004,7 @@
             clearTimeout(idleTimeout);
 
             const isPdfOpen = pdfModal.classList.contains('open');
-            const timeoutDuration = isPdfOpen ? 20000 : 6000; // 15s for PDF, 6s for normal
+            const timeoutDuration = isPdfOpen ? 40000 : 30000; // 15s for PDF, 6s for normal
 
             idleTimeout = setTimeout(() => {
                 if (isPdfOpen) closePDF();
@@ -1050,5 +1050,6 @@
 
     </script>
 </body>
+
 
 </html>
