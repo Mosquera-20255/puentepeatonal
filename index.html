@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiosco Mosquera - Conexión Belari</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         :root {
             --bg-dark: #111;
@@ -19,12 +17,8 @@
             --header-height: 120px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Montserrat', sans-serif;
             background: var(--bg-dark);
@@ -34,620 +28,225 @@
 
         /* --- HEADER --- */
         .glass-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 90px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 90px;
             background: var(--glass-light);
             border-bottom: 3px solid var(--accent-green);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 5%;
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
-
-        .brand-logo img {
-            height: 55px;
-        }
+        .brand-logo img { height: 55px; }
 
         .status-badge {
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 8px 20px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #ddd;
-            background: white;
+            font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 8px 20px;
+            border-radius: 30px; display: flex; align-items: center; gap: 10px;
+            border: 1px solid #ddd; background: white;
         }
-
-        .auto .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            animation: pulse-green 1s infinite;
-        }
-
-        .user .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--accent-yellow);
-        }
+        .auto .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-green); animation: pulse-green 1s infinite; }
+        .user .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-yellow); }
 
         /* --- SCROLL WRAPPER --- */
         .scroll-wrapper {
-            height: 100vh;
-            width: 100vw;
-            overflow-y: scroll;
-            scroll-behavior: smooth;
-            scroll-snap-type: y mandatory;
+            height: 100vh; width: 100vw; overflow-y: scroll;
+            scroll-behavior: smooth; scroll-snap-type: y mandatory;
         }
-
-        .scroll-wrapper::-webkit-scrollbar {
-            display: none;
-        }
+        .scroll-wrapper::-webkit-scrollbar { display: none; }
 
         section {
-            height: 100vh;
-            width: 100vw;
-            scroll-snap-align: start;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            height: 100vh; width: 100vw; scroll-snap-align: start;
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center;
             padding-top: var(--header-height);
         }
 
         /* --- FONDOS Y EFECTOS --- */
         .bg-zoom {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            z-index: 0;
-            animation: kenBurns 30s infinite alternate;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            z-index: 0; animation: kenBurns 30s infinite alternate;
         }
-
         .bg-overlay-gradient {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.98) 35%, rgba(255, 255, 255, 0.7) 60%, rgba(255, 255, 255, 0) 100%);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            background: linear-gradient(90deg, rgba(255,255,255,0.98) 35%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0) 100%);
         }
-
         .bg-overlay-dark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: rgba(0, 0, 0, 0.75);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            background: rgba(0,0,0,0.75);
         }
 
         /* --- ANIMACIONES DE ENTRADA --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        section.active .reveal {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        section.active .d-1 {
-            transition-delay: 0.1s;
-        }
-
-        section.active .d-2 {
-            transition-delay: 0.2s;
-        }
-
-        section.active .d-3 {
-            transition-delay: 0.3s;
-        }
-
-        section.active .d-4 {
-            transition-delay: 0.4s;
-        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        section.active .reveal { opacity: 1; transform: translateY(0); }
+        section.active .d-1 { transition-delay: 0.1s; }
+        section.active .d-2 { transition-delay: 0.2s; }
+        section.active .d-3 { transition-delay: 0.3s; }
+        section.active .d-4 { transition-delay: 0.4s; }
 
         /* --- SECCIÓN 1: PORTADA --- */
-        #hero .content {
-            position: relative;
-            z-index: 2;
-            width: 50%;
-            padding-left: 8%;
-        }
-
-        h1 {
-            font-size: 3.8rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            color: #111;
-        }
-
+        #hero .content { position: relative; z-index: 2; width: 50%; padding-left: 8%; }
+        h1 { font-size: 3.8rem; font-weight: 900; line-height: 1; margin-bottom: 10px; text-transform: uppercase; color: #111; }
+        
         .fingerprint-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--accent-yellow);
-            color: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin-top: 30px;
-            cursor: pointer;
+            width: 80px; height: 80px; border-radius: 50%;
+            background: var(--accent-yellow); color: #111;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin-top: 30px; cursor: pointer;
             box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
             animation: pulse-ring 2s infinite;
         }
 
         /* --- SECCIÓN 2: UBICACIÓN --- */
-        #location {
-            background: #f8f9fa;
-        }
-
-        .loc-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
+        #location { background: #f8f9fa; }
+        .loc-container { display: flex; width: 100%; height: 100%; position: relative; }
         .loc-info {
-            width: 45%;
-            z-index: 2;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 5%;
+            width: 45%; z-index: 2; background: white;
+            display: flex; flex-direction: column; justify-content: center; padding: 0 5%;
             clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
         }
-
         .loc-map {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 60%;
-            height: 100%;
-            background: url('img-mapa.jpg') no-repeat center center/cover;
-            z-index: 1;
+            position: absolute; right: 0; top: 0; width: 60%; height: 100%;
+            background: url('img-mapa.jpg') no-repeat center center/cover; z-index: 1;
         }
-
         .info-pill {
-            background: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border-left: 6px solid var(--accent-green);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            animation: floatCard 6s ease-in-out infinite;
+            background: #fff; padding: 20px; border-radius: 15px; margin-bottom: 15px;
+            border-left: 6px solid var(--accent-green); display: flex; align-items: center; gap: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); animation: floatCard 6s ease-in-out infinite;
         }
-
-        .delay-float-1 {
-            animation-delay: 0s;
-        }
-
-        .delay-float-2 {
-            animation-delay: 1s;
-            border-color: var(--accent-yellow);
-        }
-
-        .delay-float-3 {
-            animation-delay: 2s;
-            border-color: #333;
-        }
-
-        .info-pill small {
-            font-weight: 700;
-            color: #888;
-            letter-spacing: 1px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-        }
-
-        .info-pill strong {
-            display: block;
-            font-size: 1.2rem;
-            color: #111;
-            margin-top: 5px;
-        }
+        .delay-float-1 { animation-delay: 0s; }
+        .delay-float-2 { animation-delay: 1s; border-color: var(--accent-yellow); }
+        .delay-float-3 { animation-delay: 2s; border-color: #333; }
+        .info-pill small { font-weight: 700; color: #888; letter-spacing: 1px; font-size: 0.7rem; text-transform: uppercase; }
+        .info-pill strong { display: block; font-size: 1.2rem; color: #111; margin-top: 5px; }
 
         /* --- SECCIÓN 3: PRESUPUESTO --- */
-        #budget {
-            position: relative;
-            background: #111;
-            color: white;
-        }
-
+        #budget { position: relative; background: #111; color: white; }
         .budget-grid {
-            position: relative;
-            z-index: 3;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            width: 85%;
-            margin: 0 auto;
-            gap: 60px;
-            align-items: center;
+            position: relative; z-index: 3; display: grid; grid-template-columns: 1fr 1fr; 
+            width: 85%; margin: 0 auto; gap: 60px; align-items: center;
         }
-
         .big-stat {
-            font-size: 7rem;
-            font-weight: 900;
-            color: var(--accent-yellow);
-            line-height: 0.9;
-            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: pulse-text 3s infinite;
+            font-size: 7rem; font-weight: 900; color: var(--accent-yellow); line-height: 0.9;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: pulse-text 3s infinite;
         }
-
         .permit-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+            padding: 25px; border-radius: 15px; margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;
             animation: floatCard 5s ease-in-out infinite;
         }
 
         /* --- SECCIÓN 4: CRONOGRAMA --- */
-        #phases {
-            background: #fff;
-            padding: 0 5%;
-        }
-
-        .phases-wrapper {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding-top: 20px;
-        }
-
-        .phases-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            height: 55vh;
-            margin-top: 20px;
-        }
-
+        #phases { background: #fff; padding: 0 5%; }
+        .phases-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; padding-top: 20px; }
+        .phases-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; height: 55vh; margin-top: 20px; }
         .phase-col {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            background: #000;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            animation: breathing 8s ease-in-out infinite;
+            position: relative; border-radius: 20px; overflow: hidden;
+            background: #000; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; animation: breathing 8s ease-in-out infinite;
         }
-
-        .ph-1 {
-            animation-delay: 0s;
-        }
-
-        .ph-2 {
-            animation-delay: 1s;
-        }
-
-        .ph-3 {
-            animation-delay: 2s;
-        }
-
-        .ph-4 {
-            animation-delay: 3s;
-        }
-
+        .ph-1 { animation-delay: 0s; } .ph-2 { animation-delay: 1s; }
+        .ph-3 { animation-delay: 2s; } .ph-4 { animation-delay: 3s; }
         .phase-bg {
-            height: 100%;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.7;
-            transition: opacity 0.3s;
+            height: 100%; width: 100%; background-size: cover; background-position: center;
+            opacity: 0.7; transition: opacity 0.3s;
         }
-
         .phase-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 25px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 1) 10%, transparent);
-            color: white;
-            pointer-events: none;
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px;
+            background: linear-gradient(to top, rgba(0,0,0,1) 10%, transparent);
+            color: white; pointer-events: none;
         }
-
-        .phase-info h3 {
-            text-transform: uppercase;
-            font-weight: 800;
-            margin-bottom: 10px;
-            color: var(--accent-yellow);
-        }
-
-        .phase-info p {
-            font-size: 0.9rem;
-            color: #ddd;
-            line-height: 1.4;
-        }
-
+        .phase-info h3 { text-transform: uppercase; font-weight: 800; margin-bottom: 10px; color: var(--accent-yellow); }
+        .phase-info p { font-size: 0.9rem; color: #ddd; line-height: 1.4; }
         .p-num {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 4rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.1);
-            line-height: 1;
-            z-index: 2;
+            position: absolute; top: 20px; right: 20px; font-size: 4rem; font-weight: 900;
+            color: rgba(255,255,255,0.1); line-height: 1; z-index: 2;
         }
 
         /* --- SECCIÓN 5: SOSTENIBILIDAD --- */
-        #tech {
-            color: white;
-        }
-
+        #tech { color: white; }
         .tech-content {
-            position: relative;
-            z-index: 3;
-            width: 85%;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 60px;
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            position: relative; z-index: 3; width: 85%; margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7); padding: 60px; border-radius: 30px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
             animation: floatCard 8s ease-in-out infinite;
         }
-
-        .tech-item h3 {
-            color: var(--accent-yellow);
-            font-size: 2rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .tech-item p {
-            font-size: 1.15rem;
-            line-height: 1.7;
-            color: #ddd;
-        }
+        .tech-item h3 { color: var(--accent-yellow); font-size: 2rem; margin-bottom: 15px; text-transform: uppercase; }
+        .tech-item p { font-size: 1.15rem; line-height: 1.7; color: #ddd; }
 
         /* --- SECCIÓN 6: CTA PDF --- */
-        #pdf-cta {
-            background: white;
-            text-align: center;
+        #pdf-cta { background: white; text-align: center; }
+        .pdf-btn {
+            background: var(--text-main); color: white; padding: 25px 70px;
+            font-size: 1.3rem; font-weight: 700; border-radius: 50px; border: none;
+            display: inline-flex; align-items: center; gap: 20px; cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); animation: pulse-ring 3s infinite;
         }
 
-        .pdf-btn {
-            background: var(--text-main);
-            color: white;
-            padding: 25px 70px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            border-radius: 50px;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            cursor: pointer;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            animation: pulse-ring 3s infinite;
+        /* --- SECCIÓN 7: GALERÍA DINÁMICA (NUEVA) --- */
+        #gallery { background: #000; padding: 0; position: relative; }
+        
+        .gallery-container {
+            width: 100%; height: 100vh; position: relative; overflow: hidden;
+        }
+        
+        .gallery-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0; transition: opacity 1s ease, transform 6s ease;
+            transform: scale(1);
+        }
+        .gallery-slide.active { opacity: 1; transform: scale(1.1); }
+        
+        .gallery-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 5%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            z-index: 10; display: flex; justify-content: space-between; align-items: end;
+        }
+        .gallery-title {
+            color: white; font-size: 3rem; font-weight: 900; text-transform: uppercase;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .gallery-counter {
+            color: var(--accent-yellow); font-size: 1.5rem; font-weight: 700;
         }
 
         /* --- CREDITOS / FINAL --- */
         #credits-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 6000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 6000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 1s ease;
         }
-
-        #credits-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .credits-content {
-            text-align: center;
-            color: white;
-        }
-
-        .credits-logo {
-            height: 60px;
-            width: auto;
-            margin-bottom: 30px;
-            animation: floatCard 4s infinite;
-        }
-
-        .credits-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--accent-yellow);
-            letter-spacing: 2px;
-            min-height: 1.5rem;
-        }
-
-        .credits-details {
-            font-size: 0.85rem;
-            color: #888;
-            letter-spacing: 1px;
-            font-weight: 400;
-            min-height: 1.2rem;
-        }
+        #credits-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .credits-content { text-align: center; color: white; }
+        .credits-logo { height: 60px; width: auto; margin-bottom: 30px; animation: floatCard 4s infinite; }
+        .credits-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent-yellow); letter-spacing: 2px; min-height: 1.5rem; }
+        .credits-details { font-size: 0.85rem; color: #888; letter-spacing: 1px; font-weight: 400; min-height: 1.2rem; }
 
         /* --- MODAL PDF --- */
         .pdf-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 5000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); z-index: 5000; display: none;
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
         }
+        .pdf-modal.open { display: flex; opacity: 1; }
+        .close-modal { position: absolute; top: 30px; right: 30px; color: white; font-size: 3rem; cursor: pointer; z-index: 5001; }
 
-        .pdf-modal.open {
-            display: flex;
-            opacity: 1;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            color: white;
-            font-size: 3rem;
-            cursor: pointer;
-            z-index: 5001;
-        }
-
-        .progress-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--accent-yellow), var(--accent-green));
-            width: 0%;
-            z-index: 2000;
-        }
+        .progress-bar { position: fixed; bottom: 0; left: 0; height: 6px; background: linear-gradient(90deg, var(--accent-yellow), var(--accent-green)); width: 0%; z-index: 2000; }
 
         /* ANIMACIONES */
-        @keyframes kenBurns {
-            0% {
-                transform: scale(1);
-            }
+        @keyframes kenBurns { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(118, 185, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(118, 185, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(118, 185, 0, 0); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); } 70% { transform: scale(1.02); box-shadow: 0 0 0 20px rgba(255, 193, 7, 0); } 100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes floatCard { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes breathing { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        @keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 
-            100% {
-                transform: scale(1.15);
-            }
-        }
-
-        @keyframes pulse-green {
-            0% {
-                box-shadow: 0 0 0 0 rgba(118, 185, 0, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(118, 185, 0, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(118, 185, 0, 0);
-            }
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                transform: scale(0.98);
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-            }
-
-            70% {
-                transform: scale(1.02);
-                box-shadow: 0 0 0 20px rgba(255, 193, 7, 0);
-            }
-
-            100% {
-                transform: scale(0.98);
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
-            }
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @keyframes floatCard {
-            0% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        @keyframes breathing {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.02);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse-text {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.8;
-            }
-        }
     </style>
 </head>
-
 <body>
 
     <div id="credits-overlay">
@@ -674,29 +273,12 @@
             <div class="bg-zoom" style="background-image: url('img-hero.jpg');"></div>
             <div class="bg-overlay-gradient"></div>
             <div class="content">
-                <div class="reveal d-1">
-                    <span
-                        style="background:var(--accent-green); color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem; letter-spacing: 1px;">
-                        INFRAESTRUCTURA MUNICIPAL
-                    </span>
-                </div>
-                <h1 class="reveal d-2" style="margin-top: 15px;">
-                    PUENTE PEATONAL
-                </h1>
-                <div class="reveal d-3"
-                    style="font-size: 1.4rem; font-weight: 500; color: #444; margin-top: 10px; display: flex; align-items: center;">
-                    <span id="typed-text"></span><span
-                        style="width:3px; height:1.4rem; background:var(--accent-yellow); margin-left:5px; animation:blink 0.8s infinite;"></span>
-                </div>
+                <div class="reveal d-1"><span style="background:var(--accent-green); color:white; padding:5px 15px; border-radius:20px; font-weight:800; font-size:0.8rem; letter-spacing: 1px;">INFRAESTRUCTURA MUNICIPAL</span></div>
+                <h1 class="reveal d-2" style="margin-top: 15px;">PUENTE PEATONAL<br>BELARI - NOVATERRA</h1>
+                <div class="reveal d-3" style="font-size: 1.4rem; font-weight: 500; color: #444; margin-top: 10px; display: flex; align-items: center;"><span id="typed-text"></span><span style="width:3px; height:1.4rem; background:var(--accent-yellow); margin-left:5px; animation:blink 0.8s infinite;"></span></div>
                 <div class="reveal d-4" style="margin-top: 50px; display: flex; align-items: center; gap: 25px;">
-                    <div class="fingerprint-btn" onclick="handleInteraction()">
-                        <i class="fas fa-fingerprint"></i>
-                    </div>
-                    <div>
-                        <strong style="display:block; font-size: 1.2rem; text-transform: uppercase;">Conoce el
-                            Proyecto</strong>
-                        <small style="color:#666;">Toca para interactuar</small>
-                    </div>
+                    <div class="fingerprint-btn" onclick="handleInteraction()"><i class="fas fa-fingerprint"></i></div>
+                    <div><strong style="display:block; font-size: 1.2rem; text-transform: uppercase;">Conoce el Proyecto</strong><small style="color:#666;">Toca para interactuar</small></div>
                 </div>
             </div>
         </section>
@@ -704,121 +286,36 @@
         <section id="location">
             <div class="loc-container">
                 <div class="loc-info">
-                    <div class="reveal d-1">
-                        <h2 style="font-size: 2.8rem; font-weight: 900; margin-bottom: 20px;">UBICACIÓN<br>ESTRATÉGICA
-                        </h2>
-                        <p style="font-size: 1.1rem; color: #666; margin-bottom: 30px;">
-                            Infraestructura clave sobre la Vía Mosquera - Mondoñedo (PR 116+510).
-                        </p>
-                    </div>
-                    <div class="reveal d-2 info-pill delay-float-1">
-                        <i class="fas fa-map-marked-alt" style="color:var(--accent-green); font-size: 1.8rem;"></i>
-                        <div>
-                            <small>ZONA DE INFLUENCIA</small>
-                            <strong>Belari y Novaterra</strong>
-                        </div>
-                    </div>
-                    <div class="reveal d-3 info-pill delay-float-2">
-                        <i class="fas fa-users" style="color:var(--accent-yellow); font-size: 1.8rem;"></i>
-                        <div>
-                            <small>ENTORNO URBANO</small>
-                            <strong>Ciudad del Sol y Serrezuela</strong>
-                        </div>
-                    </div>
-                    <div class="reveal d-4 info-pill delay-float-3" style="border-color: #333;">
-                        <i class="fas fa-check-circle" style="color:#333; font-size: 1.8rem;"></i>
-                        <div>
-                            <small>VIABILIDAD TÉCNICA</small>
-                            <strong>Concepto Favorable DEVISAB</strong>
-                        </div>
-                    </div>
+                    <div class="reveal d-1"><h2 style="font-size: 2.8rem; font-weight: 900; margin-bottom: 20px;">UBICACIÓN<br>ESTRATÉGICA</h2><p style="font-size: 1.1rem; color: #666; margin-bottom: 30px;">Infraestructura clave sobre la Vía Mosquera - Mondoñedo (PR 116+510).</p></div>
+                    <div class="reveal d-2 info-pill delay-float-1"><i class="fas fa-map-marked-alt" style="color:var(--accent-green); font-size: 1.8rem;"></i><div><small>ZONA DE INFLUENCIA</small><strong>Belari y Novaterra</strong></div></div>
+                    <div class="reveal d-3 info-pill delay-float-2"><i class="fas fa-users" style="color:var(--accent-yellow); font-size: 1.8rem;"></i><div><small>ENTORNO URBANO</small><strong>Ciudad del Sol y Serrezuela</strong></div></div>
+                    <div class="reveal d-4 info-pill delay-float-3" style="border-color: #333;"><i class="fas fa-check-circle" style="color:#333; font-size: 1.8rem;"></i><div><small>VIABILIDAD TÉCNICA</small><strong>Concepto Favorable DEVISAB</strong></div></div>
                 </div>
                 <div class="loc-map"></div>
             </div>
         </section>
 
         <section id="budget">
-            <div class="bg-zoom" style="background-image: url('img-hero.jpg'); opacity: 0.2; filter: grayscale(100%);">
-            </div>
+            <div class="bg-zoom" style="background-image: url('img-hero.jpg'); opacity: 0.2; filter: grayscale(100%);"></div>
             <div class="bg-overlay-dark"></div>
             <div class="budget-grid">
-                <div class="reveal d-1">
-                    <h2 style="color:white; margin-bottom: 10px;">INVERSIÓN<br>PÚBLICA</h2>
-                    <span style="font-size: 1.5rem; color: var(--accent-green); font-weight: 700;">PRESUPUESTO
-                        TOTAL</span>
-                    <div class="big-stat">$6.600</div>
-                    <div style="font-size: 2.5rem; font-weight: 700; color:white;">MILLONES DE PESOS</div>
-                    <p style="color: #ccc; margin-top: 15px; border-top: 1px solid #555; padding-top: 15px;">
-                        Incluye Estudios Técnicos, Construcción e Interventoría.
-                    </p>
-                </div>
+                <div class="reveal d-1"><h2 style="color:white; margin-bottom: 10px;">INVERSIÓN<br>PÚBLICA</h2><span style="font-size: 1.5rem; color: var(--accent-green); font-weight: 700;">PRESUPUESTO TOTAL</span><div class="big-stat">$6.600</div><div style="font-size: 2.5rem; font-weight: 700; color:white;">MILLONES DE PESOS</div><p style="color: #ccc; margin-top: 15px; border-top: 1px solid #555; padding-top: 15px;">Incluye Estudios Técnicos, Construcción e Interventoría.</p></div>
                 <div class="reveal d-2">
-                    <div class="permit-card delay-float-1">
-                        <div>
-                            <strong style="display:block; font-size:1.1rem; color:var(--accent-yellow);">ICCU</strong>
-                            <small style="color:#ddd;">Vigilancia y Control</small>
-                        </div>
-                        <i class="fas fa-file-contract" style="color:var(--accent-green); font-size:1.8rem;"></i>
-                    </div>
-                    <div class="permit-card delay-float-2">
-                        <div>
-                            <strong
-                                style="display:block; font-size:1.1rem; color:var(--accent-yellow);">DEVISAB</strong>
-                            <small style="color:#ddd;">Permiso Ocupación de Vía</small>
-                        </div>
-                        <i class="fas fa-road" style="color:var(--accent-green); font-size:1.8rem;"></i>
-                    </div>
-                    <div class="permit-card delay-float-3">
-                        <div>
-                            <strong style="display:block; font-size:1.1rem; color:var(--accent-yellow);">OBRAS
-                                PÚBLICAS</strong>
-                            <small style="color:#ddd;">Supervisión Técnica</small>
-                        </div>
-                        <i class="fas fa-hard-hat" style="color:var(--accent-green); font-size:1.8rem;"></i>
-                    </div>
+                    <div class="permit-card delay-float-1"><div><strong style="display:block; font-size:1.1rem; color:var(--accent-yellow);">ICCU</strong><small style="color:#ddd;">Vigilancia y Control</small></div><i class="fas fa-file-contract" style="color:var(--accent-green); font-size:1.8rem;"></i></div>
+                    <div class="permit-card delay-float-2"><div><strong style="display:block; font-size:1.1rem; color:var(--accent-yellow);">DEVISAB</strong><small style="color:#ddd;">Permiso Ocupación de Vía</small></div><i class="fas fa-road" style="color:var(--accent-green); font-size:1.8rem;"></i></div>
+                    <div class="permit-card delay-float-3"><div><strong style="display:block; font-size:1.1rem; color:var(--accent-yellow);">OBRAS PÚBLICAS</strong><small style="color:#ddd;">Supervisión Técnica</small></div><i class="fas fa-hard-hat" style="color:var(--accent-green); font-size:1.8rem;"></i></div>
                 </div>
             </div>
         </section>
 
         <section id="phases">
             <div class="phases-wrapper">
-                <div class="reveal d-1" style="margin-bottom: 20px; padding-left: 20px;">
-                    <h2 style="font-size: 2.5rem; font-weight: 900;">CRONOGRAMA TÉCNICO</h2>
-                    <p style="color:#666;">Ejecución en 4 etapas constructivas</p>
-                </div>
+                <div class="reveal d-1" style="margin-bottom: 20px; padding-left: 20px;"><h2 style="font-size: 2.5rem; font-weight: 900;">CRONOGRAMA TÉCNICO</h2><p style="color:#666;">Ejecución en 4 etapas constructivas</p></div>
                 <div class="phases-container">
-                    <div class="phase-col ph-1 reveal d-1">
-                        <div class="phase-bg" style="background-image: url('img-perfil.jpg');"></div>
-                        <div class="p-num">01</div>
-                        <div class="phase-info">
-                            <h3 style="color:var(--accent-yellow);">CIMENTACIÓN</h3>
-                            <p>Pilotaje profundo (25m - 30m) y construcción de dados en concreto.</p>
-                        </div>
-                    </div>
-                    <div class="phase-col ph-2 reveal d-2">
-                        <div class="phase-bg" style="background-image: url('img-hero.jpg');"></div>
-                        <div class="p-num">02</div>
-                        <div class="phase-info">
-                            <h3 style="color:var(--accent-yellow);">ESTRUCTURA</h3>
-                            <p>Levantamiento de pilas, rampas de acceso y apoyos temporales.</p>
-                        </div>
-                    </div>
-                    <div class="phase-col ph-3 reveal d-3">
-                        <div class="phase-bg" style="background-image: url('img-montaje.jpg');"></div>
-                        <div class="p-num">03</div>
-                        <div class="phase-info">
-                            <h3 style="color:var(--accent-yellow);">MONTAJE</h3>
-                            <p>Izaje de arcos metálicos principales sobre la vía nacional.</p>
-                        </div>
-                    </div>
-                    <div class="phase-col ph-4 reveal d-4">
-                        <div class="phase-bg" style="background-image: url('img-noche.jpg');"></div>
-                        <div class="p-num">04</div>
-                        <div class="phase-info">
-                            <h3 style="color:var(--accent-green);">ACABADOS</h3>
-                            <p>Instalación eléctrica solar, pisos Maderplast y barandas.</p>
-                        </div>
-                    </div>
+                    <div class="phase-col ph-1 reveal d-1"><div class="phase-bg" style="background-image: url('img-perfil.jpg');"></div><div class="p-num">01</div><div class="phase-info"><h3 style="color:var(--accent-yellow);">CIMENTACIÓN</h3><p>Pilotaje profundo (25m - 30m) y construcción de dados en concreto.</p></div></div>
+                    <div class="phase-col ph-2 reveal d-2"><div class="phase-bg" style="background-image: url('img-hero.jpg');"></div><div class="p-num">02</div><div class="phase-info"><h3 style="color:var(--accent-yellow);">ESTRUCTURA</h3><p>Levantamiento de pilas, rampas de acceso y apoyos temporales.</p></div></div>
+                    <div class="phase-col ph-3 reveal d-3"><div class="phase-bg" style="background-image: url('img-montaje.jpg');"></div><div class="p-num">03</div><div class="phase-info"><h3 style="color:var(--accent-yellow);">MONTAJE</h3><p>Izaje de arcos metálicos principales sobre la vía nacional.</p></div></div>
+                    <div class="phase-col ph-4 reveal d-4"><div class="phase-bg" style="background-image: url('img-noche.jpg');"></div><div class="p-num">04</div><div class="phase-info"><h3 style="color:var(--accent-green);">ACABADOS</h3><p>Instalación eléctrica solar, pisos Maderplast y barandas.</p></div></div>
                 </div>
             </div>
         </section>
@@ -827,39 +324,26 @@
             <div class="bg-zoom" style="background-image: url('img-noche.jpg');"></div>
             <div class="bg-overlay-dark"></div>
             <div class="tech-content reveal d-1">
-                <div class="tech-item">
-                    <i class="fas fa-solar-panel"
-                        style="font-size: 3.5rem; color: var(--accent-yellow); margin-bottom: 20px;"></i>
-                    <h3>ILUMINACIÓN SOLAR</h3>
-                    <p>
-                        Sistema fotovoltaico 100% autónomo. Garantiza 36 horas de reserva según norma <strong>RETILAP
-                            2024</strong>. Seguridad nocturna garantizada.
-                    </p>
-                </div>
-                <div class="tech-item" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 40px;">
-                    <i class="fas fa-bicycle"
-                        style="font-size: 3.5rem; color: var(--accent-green); margin-bottom: 20px;"></i>
-                    <h3>URBANISMO</h3>
-                    <p>
-                        Continuidad de ciclorrutas existentes y adecuación de paraderos. Integración total con el
-                        entorno urbano.
-                    </p>
-                </div>
+                <div class="tech-item"><i class="fas fa-solar-panel" style="font-size: 3.5rem; color: var(--accent-yellow); margin-bottom: 20px;"></i><h3>ILUMINACIÓN SOLAR</h3><p>Sistema fotovoltaico 100% autónomo. Garantiza 36 horas de reserva según norma <strong>RETILAP 2024</strong>. Seguridad nocturna garantizada.</p></div>
+                <div class="tech-item" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 40px;"><i class="fas fa-bicycle" style="font-size: 3.5rem; color: var(--accent-green); margin-bottom: 20px;"></i><h3>URBANISMO</h3><p>Continuidad de ciclorrutas existentes y adecuación de paraderos. Integración total con el entorno urbano.</p></div>
             </div>
         </section>
 
         <section id="pdf-cta">
             <div class="reveal d-1" style="max-width: 700px; margin: 0 auto; text-align: center;">
-                <i class="fas fa-file-pdf"
-                    style="font-size: 6rem; color: #ddd; margin-bottom: 25px; display: block; animation: floatCard 4s infinite;"></i>
+                <i class="fas fa-file-pdf" style="font-size: 6rem; color: #ddd; margin-bottom: 25px; display: block; animation: floatCard 4s infinite;"></i>
                 <h2 style="font-size: 2.5rem; font-weight: 900;">DOCUMENTACIÓN TÉCNICA</h2>
-                <p style="font-size: 1.2rem; color: #666; margin-bottom: 40px;">
-                    Acceso a planos detallados, renders y especificaciones del proyecto.
-                </p>
-                <button class="pdf-btn" onclick="openPDF()">
-                    VER PRESENTACIÓN COMPLETA
-                    <i class="fas fa-external-link-alt" style="margin-left: 10px;"></i>
-                </button>
+                <p style="font-size: 1.2rem; color: #666; margin-bottom: 40px;">Acceso a planos detallados, renders y especificaciones del proyecto.</p>
+                <button class="pdf-btn" onclick="openPDF()">VER PRESENTACIÓN COMPLETA<i class="fas fa-external-link-alt" style="margin-left: 10px;"></i></button>
+            </div>
+        </section>
+
+        <section id="gallery">
+            <div class="gallery-container" id="gallery-container">
+                <div class="gallery-overlay">
+                    <div class="gallery-title">CONOCE NUESTRO<br><span style="color:var(--accent-yellow)">PROYECTO</span></div>
+                    <div class="gallery-counter" id="gallery-counter">1 / 17</div>
+                </div>
             </div>
         </section>
 
@@ -882,17 +366,65 @@
         const creditsOverlay = document.getElementById('credits-overlay');
         const creditNameContainer = document.getElementById('credit-name-container');
         const creditDetailsContainer = document.getElementById('credit-details-container');
+        const galleryContainer = document.getElementById('gallery-container');
+        const galleryCounter = document.getElementById('gallery-counter');
 
         const slideDuration = 10000;
         const phrase = "Conectando vidas en el Campo de Gigantes";
         const signatureName = "Wilson David Saa Aldana";
         const signatureDetails = "CPS-0439-2026  •  Dirección de las TIC";
+        const imageBase = "8e0002cec26ab6b88717ef76edbfa3ec-";
 
         let isAuto = true;
-        let isEnding = false; // Flag to prevent double execution
-        let scrollInterval, progressInterval, idleTimeout;
+        let isEnding = false; // Bandera de finalización
+        let scrollInterval, progressInterval, idleTimeout, galleryInterval;
         let charIndex = 0;
+        let galleryIndex = 0;
+        let isGalleryPlaying = false;
 
+        // --- INICIALIZAR GALERÍA ---
+        function initGallery() {
+            for(let i=0; i<=16; i++) {
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'gallery-slide';
+                imgDiv.style.backgroundImage = `url('${imageBase}${i}.jpg')`;
+                imgDiv.id = `slide-${i}`;
+                if(i===0) imgDiv.classList.add('active');
+                galleryContainer.prepend(imgDiv); // Prepend para que el overlay quede encima
+            }
+        }
+
+        // --- REPRODUCIR GALERÍA (AUTO) ---
+        function playGalleryCycle() {
+            if(isGalleryPlaying) return;
+            isGalleryPlaying = true;
+            galleryIndex = 0;
+            
+            // Pausar el scroll principal mientras la galería corre
+            clearInterval(scrollInterval);
+            
+            // Mostrar Slide 0
+            updateGallery(0);
+
+            galleryInterval = setInterval(() => {
+                galleryIndex++;
+                if(galleryIndex > 16) {
+                    clearInterval(galleryInterval);
+                    isGalleryPlaying = false;
+                    triggerEndSequence(); // AL FINALIZAR GALERÍA -> FIRMA
+                } else {
+                    updateGallery(galleryIndex);
+                }
+            }, 4000); // 4 Segundos por imagen
+        }
+
+        function updateGallery(idx) {
+            document.querySelectorAll('.gallery-slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${idx}`).classList.add('active');
+            galleryCounter.innerText = `${idx + 1} / 17`;
+        }
+
+        // --- TYPEWRITER ---
         function typeWriter() {
             if (charIndex < phrase.length) {
                 typedText.innerHTML += phrase.charAt(charIndex);
@@ -928,33 +460,42 @@
         function openPDF() { stopAutoScroll(); pdfModal.classList.add('open'); }
         function closePDF() { pdfModal.classList.remove('open'); handleInteraction(); }
 
-        // --- END SEQUENCE LOGIC ---
+        // --- SECUENCIA FINAL ---
         function triggerEndSequence() {
-            if (isEnding) return;
+            if (isEnding) return; 
             isEnding = true;
+            clearInterval(galleryInterval); // Stop gallery if running
 
-            stopAutoScroll();
+            stopAutoScroll(); 
             creditsOverlay.classList.add('active');
-            typeCredits();
-
+            typeCredits(); 
+            
             setTimeout(() => {
                 creditsOverlay.classList.remove('active');
-
-                // IMPORTANT: Reset scroll without smooth to prevent glitching
-                scroller.scrollTo({ top: 0, behavior: 'auto' });
-
-                setTimeout(() => {
-                    typedText.innerHTML = '';
-                    charIndex = 0;
-                    typeWriter();
-                    isEnding = false; // Reset flag
-                    startAutoScroll();
-                }, 1000);
+                resetAndRestart();
             }, 6000);
         }
 
+        function resetAndRestart() {
+            scroller.scrollTo({ top: 0, behavior: 'auto' });
+            clearInterval(scrollInterval);
+            clearInterval(progressInterval);
+            clearInterval(galleryInterval);
+            clearTimeout(idleTimeout);
+            isGalleryPlaying = false;
+            
+            setTimeout(() => {
+                typedText.innerHTML = '';
+                charIndex = 0;
+                typeWriter();
+                isEnding = false;
+                startAutoScroll();
+            }, 1000);
+        }
+
+        // --- AUTO SCROLL ---
         function startAutoScroll() {
-            if (pdfModal.classList.contains('open') || creditsOverlay.classList.contains('active')) return;
+            if(pdfModal.classList.contains('open') || creditsOverlay.classList.contains('active') || isEnding) return;
 
             isAuto = true;
             statusBadge.classList.replace('user', 'auto');
@@ -963,14 +504,29 @@
 
             clearInterval(scrollInterval);
             scrollInterval = setInterval(() => {
+                // DETECCIÓN ESPECIAL PARA GALERÍA
+                // Si estamos en la sección PDF (anterior a galería), el siguiente paso es la galería
+                // Necesitamos detectar si "nextPos" va a ser la galería.
+                
                 const height = window.innerHeight;
                 const currentScroll = Math.ceil(scroller.scrollTop);
                 const nextPos = Math.ceil((currentScroll + height) / height) * height;
-
-                if (nextPos >= scroller.scrollHeight - 50) {
-                    clearInterval(scrollInterval);
-                    triggerEndSequence();
-                } else {
+                
+                // Calculamos si nextPos cae dentro de la sección #gallery
+                const galleryTop = document.getElementById('gallery').offsetTop;
+                
+                if (Math.abs(nextPos - galleryTop) < 50) {
+                    // Si el siguiente salto es la galería:
+                    scroller.scrollTo({ top: galleryTop, behavior: 'smooth' });
+                    // Detenemos el scroll vertical y arrancamos la galería interna
+                    clearInterval(scrollInterval); 
+                    setTimeout(playGalleryCycle, 1000); // Esperar que llegue el scroll
+                } 
+                else if (nextPos >= scroller.scrollHeight - 50) {
+                    // Si ya estamos al fondo (por seguridad)
+                    if(!isGalleryPlaying) triggerEndSequence();
+                } 
+                else {
                     scroller.scrollTo({ top: nextPos, behavior: 'smooth' });
                     runProgress();
                 }
@@ -982,6 +538,9 @@
             isAuto = false;
             clearInterval(scrollInterval);
             clearInterval(progressInterval);
+            clearInterval(galleryInterval); // Stop gallery auto-play if user touches
+            isGalleryPlaying = false;
+            
             progressBar.style.width = '0%';
             statusBadge.classList.replace('auto', 'user');
             statusText.innerText = "INTERACTIVO";
@@ -1002,30 +561,26 @@
         function handleInteraction() {
             stopAutoScroll();
             clearTimeout(idleTimeout);
-
+            
             const isPdfOpen = pdfModal.classList.contains('open');
-            const timeoutDuration = isPdfOpen ? 40000 : 30000; // 15s for PDF, 6s for normal
+            const timeoutDuration = isPdfOpen ? 15000 : 6000; 
 
             idleTimeout = setTimeout(() => {
-                if (isPdfOpen) closePDF();
-                // Trigger full reset via end sequence
-                if (!isEnding) triggerEndSequence();
-            }, timeoutDuration);
+                if(isPdfOpen) closePDF();
+                if(!isEnding) resetAndRestart(); 
+            }, timeoutDuration); 
         }
 
-        // --- SCROLL EVENT LISTENER ---
+        // --- DETECTAR FIN DE SCROLL MANUAL ---
         scroller.addEventListener('scroll', () => {
-            // ONLY trigger end sequence via scroll if in AUTO mode
-            // This fixes the issue where manual scrolling triggers it immediately
-            if (isAuto && !isEnding && (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 20)) {
-                triggerEndSequence();
+            // En modo manual, NO disparar firma automática al llegar al fondo.
+            // El usuario debe esperar el timeout de inactividad o tocar algo.
+            // Si quieres que dispare firma por timeout en el fondo:
+            if (!isAuto) {
+                // No action logic here needed, handleInteraction handles the reset.
             }
-
-            // If manual mode, hitting bottom does NOTHING immediately.
-            // The user can interact. If they stop, the idleTimeout triggers the reset.
         });
 
-        // --- OBSERVER ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1035,21 +590,20 @@
                 }
             });
         }, { threshold: 0.3 });
-
+        
         document.querySelectorAll('section').forEach(s => observer.observe(s));
 
         window.addEventListener('click', (e) => {
-            if (!pdfModal.contains(e.target)) handleInteraction();
+            if(!pdfModal.contains(e.target)) handleInteraction();
         });
         window.addEventListener('touchstart', handleInteraction);
-
+        
         window.onload = () => {
+            initGallery();
             typeWriter();
             startAutoScroll();
         };
 
     </script>
 </body>
-
-
 </html>
