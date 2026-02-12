@@ -24,6 +24,7 @@
             background: var(--bg-dark);
             color: var(--text-main);
             overflow: hidden;
+            user-select: none; /* Evita selección de texto en kiosco */
         }
 
         /* --- HEADER --- */
@@ -76,6 +77,7 @@
         /* --- ANIMACIONES DE ENTRADA --- */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         section.active .reveal { opacity: 1; transform: translateY(0); }
+        
         section.active .d-1 { transition-delay: 0.1s; }
         section.active .d-2 { transition-delay: 0.2s; }
         section.active .d-3 { transition-delay: 0.3s; }
@@ -183,7 +185,7 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.3); animation: pulse-ring 3s infinite;
         }
 
-        /* --- SECCIÓN 7: GALERÍA DINÁMICA (NUEVA) --- */
+        /* --- SECCIÓN 7: GALERÍA FINAL (NUEVA CON CONTROLES) --- */
         #gallery { background: #000; padding: 0; position: relative; }
         
         .gallery-container {
@@ -193,15 +195,16 @@
         .gallery-slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 1s ease, transform 6s ease;
+            opacity: 0; transition: opacity 0.5s ease;
             transform: scale(1);
         }
-        .gallery-slide.active { opacity: 1; transform: scale(1.1); }
+        .gallery-slide.active { opacity: 1; transform: scale(1.05); transition: transform 6s ease, opacity 0.5s ease; }
         
         .gallery-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 5%;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             z-index: 10; display: flex; justify-content: space-between; align-items: end;
+            pointer-events: none; /* Para que los clicks pasen a los controles */
         }
         .gallery-title {
             color: white; font-size: 3rem; font-weight: 900; text-transform: uppercase;
@@ -210,6 +213,19 @@
         .gallery-counter {
             color: var(--accent-yellow); font-size: 1.5rem; font-weight: 700;
         }
+
+        /* Controles Manuales de Galería */
+        .gallery-controls {
+            position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between;
+            padding: 0 20px; z-index: 20; transform: translateY(-50%);
+        }
+        .g-btn {
+            background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.3);
+            width: 60px; height: 60px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;
+            backdrop-filter: blur(5px); transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .g-btn:active { background: var(--accent-green); transform: scale(0.9); }
 
         /* --- CREDITOS / FINAL --- */
         #credits-overlay {
@@ -344,6 +360,11 @@
                     <div class="gallery-title">CONOCE NUESTRO<br><span style="color:var(--accent-yellow)">PROYECTO</span></div>
                     <div class="gallery-counter" id="gallery-counter">1 / 17</div>
                 </div>
+                
+                <div class="gallery-controls">
+                    <button class="g-btn" onclick="manualPrev()"><i class="fas fa-chevron-left"></i></button>
+                    <button class="g-btn" onclick="manualNext()"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
         </section>
 
@@ -376,13 +397,12 @@
         const imageBase = "8e0002cec26ab6b88717ef76edbfa3ec-";
 
         let isAuto = true;
-        let isEnding = false; // Bandera de finalización
+        let isEnding = false; 
         let scrollInterval, progressInterval, idleTimeout, galleryInterval;
         let charIndex = 0;
         let galleryIndex = 0;
         let isGalleryPlaying = false;
 
-        // --- INICIALIZAR GALERÍA ---
         function initGallery() {
             for(let i=0; i<=16; i++) {
                 const imgDiv = document.createElement('div');
@@ -390,20 +410,16 @@
                 imgDiv.style.backgroundImage = `url('${imageBase}${i}.jpg')`;
                 imgDiv.id = `slide-${i}`;
                 if(i===0) imgDiv.classList.add('active');
-                galleryContainer.prepend(imgDiv); // Prepend para que el overlay quede encima
+                galleryContainer.prepend(imgDiv);
             }
         }
 
-        // --- REPRODUCIR GALERÍA (AUTO) ---
+        // --- GALERÍA AUTOMÁTICA ---
         function playGalleryCycle() {
             if(isGalleryPlaying) return;
             isGalleryPlaying = true;
             galleryIndex = 0;
-            
-            // Pausar el scroll principal mientras la galería corre
             clearInterval(scrollInterval);
-            
-            // Mostrar Slide 0
             updateGallery(0);
 
             galleryInterval = setInterval(() => {
@@ -411,11 +427,30 @@
                 if(galleryIndex > 16) {
                     clearInterval(galleryInterval);
                     isGalleryPlaying = false;
-                    triggerEndSequence(); // AL FINALIZAR GALERÍA -> FIRMA
+                    triggerEndSequence();
                 } else {
                     updateGallery(galleryIndex);
                 }
-            }, 4000); // 4 Segundos por imagen
+            }, 4000); 
+        }
+
+        // --- CONTROLES MANUALES GALERÍA ---
+        function manualNext() {
+            handleInteraction(); // Pausa auto y resetea timer
+            galleryIndex++;
+            if (galleryIndex > 16) {
+                // Si intenta pasar la última foto manualmente, fin.
+                triggerEndSequence(); 
+            } else {
+                updateGallery(galleryIndex);
+            }
+        }
+
+        function manualPrev() {
+            handleInteraction();
+            galleryIndex--;
+            if (galleryIndex < 0) galleryIndex = 0; // No loop atrás
+            updateGallery(galleryIndex);
         }
 
         function updateGallery(idx) {
@@ -424,7 +459,6 @@
             galleryCounter.innerText = `${idx + 1} / 17`;
         }
 
-        // --- TYPEWRITER ---
         function typeWriter() {
             if (charIndex < phrase.length) {
                 typedText.innerHTML += phrase.charAt(charIndex);
@@ -460,11 +494,10 @@
         function openPDF() { stopAutoScroll(); pdfModal.classList.add('open'); }
         function closePDF() { pdfModal.classList.remove('open'); handleInteraction(); }
 
-        // --- SECUENCIA FINAL ---
         function triggerEndSequence() {
             if (isEnding) return; 
             isEnding = true;
-            clearInterval(galleryInterval); // Stop gallery if running
+            clearInterval(galleryInterval);
 
             stopAutoScroll(); 
             creditsOverlay.classList.add('active');
@@ -493,7 +526,6 @@
             }, 1000);
         }
 
-        // --- AUTO SCROLL ---
         function startAutoScroll() {
             if(pdfModal.classList.contains('open') || creditsOverlay.classList.contains('active') || isEnding) return;
 
@@ -504,26 +536,17 @@
 
             clearInterval(scrollInterval);
             scrollInterval = setInterval(() => {
-                // DETECCIÓN ESPECIAL PARA GALERÍA
-                // Si estamos en la sección PDF (anterior a galería), el siguiente paso es la galería
-                // Necesitamos detectar si "nextPos" va a ser la galería.
-                
                 const height = window.innerHeight;
                 const currentScroll = Math.ceil(scroller.scrollTop);
                 const nextPos = Math.ceil((currentScroll + height) / height) * height;
-                
-                // Calculamos si nextPos cae dentro de la sección #gallery
                 const galleryTop = document.getElementById('gallery').offsetTop;
                 
                 if (Math.abs(nextPos - galleryTop) < 50) {
-                    // Si el siguiente salto es la galería:
                     scroller.scrollTo({ top: galleryTop, behavior: 'smooth' });
-                    // Detenemos el scroll vertical y arrancamos la galería interna
                     clearInterval(scrollInterval); 
-                    setTimeout(playGalleryCycle, 1000); // Esperar que llegue el scroll
+                    setTimeout(playGalleryCycle, 1000); 
                 } 
                 else if (nextPos >= scroller.scrollHeight - 50) {
-                    // Si ya estamos al fondo (por seguridad)
                     if(!isGalleryPlaying) triggerEndSequence();
                 } 
                 else {
@@ -538,7 +561,7 @@
             isAuto = false;
             clearInterval(scrollInterval);
             clearInterval(progressInterval);
-            clearInterval(galleryInterval); // Stop gallery auto-play if user touches
+            clearInterval(galleryInterval); 
             isGalleryPlaying = false;
             
             progressBar.style.width = '0%';
@@ -571,13 +594,11 @@
             }, timeoutDuration); 
         }
 
-        // --- DETECTAR FIN DE SCROLL MANUAL ---
+        // --- SCROLL MANUAL ---
         scroller.addEventListener('scroll', () => {
-            // En modo manual, NO disparar firma automática al llegar al fondo.
-            // El usuario debe esperar el timeout de inactividad o tocar algo.
-            // Si quieres que dispare firma por timeout en el fondo:
             if (!isAuto) {
-                // No action logic here needed, handleInteraction handles the reset.
+                // En manual, NO hacemos nada al llegar al fondo. 
+                // El usuario debe interactuar con la galería para finalizar o esperar el timeout.
             }
         });
 
