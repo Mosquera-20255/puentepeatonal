@@ -24,7 +24,7 @@
             background: var(--bg-dark);
             color: var(--text-main);
             overflow: hidden;
-            user-select: none; /* Evita selección de texto en kiosco */
+            user-select: none;
         }
 
         /* --- HEADER --- */
@@ -77,7 +77,6 @@
         /* --- ANIMACIONES DE ENTRADA --- */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         section.active .reveal { opacity: 1; transform: translateY(0); }
-        
         section.active .d-1 { transition-delay: 0.1s; }
         section.active .d-2 { transition-delay: 0.2s; }
         section.active .d-3 { transition-delay: 0.3s; }
@@ -185,44 +184,36 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.3); animation: pulse-ring 3s infinite;
         }
 
-        /* --- SECCIÓN 7: GALERÍA FINAL (NUEVA CON CONTROLES) --- */
+        /* --- SECCIÓN 7: GALERÍA FINAL --- */
         #gallery { background: #000; padding: 0; position: relative; }
-        
-        .gallery-container {
-            width: 100%; height: 100vh; position: relative; overflow: hidden;
-        }
+        .gallery-container { width: 100%; height: 100vh; position: relative; overflow: hidden; }
         
         .gallery-slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 0.5s ease;
-            transform: scale(1);
+            opacity: 0; /* Por defecto invisibles */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            z-index: 1;
         }
-        .gallery-slide.active { opacity: 1; transform: scale(1.05); transition: transform 6s ease, opacity 0.5s ease; }
+        .gallery-slide.active { opacity: 1; z-index: 2; transform: scale(1.05); }
         
         .gallery-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 5%;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             z-index: 10; display: flex; justify-content: space-between; align-items: end;
-            pointer-events: none; /* Para que los clicks pasen a los controles */
+            pointer-events: none;
         }
-        .gallery-title {
-            color: white; font-size: 3rem; font-weight: 900; text-transform: uppercase;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .gallery-counter {
-            color: var(--accent-yellow); font-size: 1.5rem; font-weight: 700;
-        }
+        .gallery-title { color: white; font-size: 3rem; font-weight: 900; text-transform: uppercase; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .gallery-counter { color: var(--accent-yellow); font-size: 1.5rem; font-weight: 700; }
 
-        /* Controles Manuales de Galería */
         .gallery-controls {
             position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between;
             padding: 0 20px; z-index: 20; transform: translateY(-50%);
         }
         .g-btn {
             background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.3);
-            width: 60px; height: 60px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;
-            backdrop-filter: blur(5px); transition: all 0.3s;
+            width: 70px; height: 70px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;
+            backdrop-filter: blur(5px); transition: all 0.2s; pointer-events: all;
             display: flex; align-items: center; justify-content: center;
         }
         .g-btn:active { background: var(--accent-green); transform: scale(0.9); }
@@ -404,14 +395,19 @@
         let isGalleryPlaying = false;
 
         function initGallery() {
+            // Limpiar galería previa si existe
+            galleryContainer.querySelectorAll('.gallery-slide').forEach(e => e.remove());
+            
             for(let i=0; i<=16; i++) {
                 const imgDiv = document.createElement('div');
                 imgDiv.className = 'gallery-slide';
                 imgDiv.style.backgroundImage = `url('${imageBase}${i}.jpg')`;
                 imgDiv.id = `slide-${i}`;
-                if(i===0) imgDiv.classList.add('active');
+                if(i===0) imgDiv.classList.add('active'); // La primera siempre visible al inicio
                 galleryContainer.prepend(imgDiv);
             }
+            galleryIndex = 0;
+            galleryCounter.innerText = "1 / 17";
         }
 
         // --- GALERÍA AUTOMÁTICA ---
@@ -419,7 +415,8 @@
             if(isGalleryPlaying) return;
             isGalleryPlaying = true;
             galleryIndex = 0;
-            clearInterval(scrollInterval);
+            
+            clearInterval(scrollInterval); // Stop vertical scroll
             updateGallery(0);
 
             galleryInterval = setInterval(() => {
@@ -436,26 +433,29 @@
 
         // --- CONTROLES MANUALES GALERÍA ---
         function manualNext() {
-            handleInteraction(); // Pausa auto y resetea timer
-            galleryIndex++;
-            if (galleryIndex > 16) {
-                // Si intenta pasar la última foto manualmente, fin.
-                triggerEndSequence(); 
-            } else {
+            handleInteraction(); // Reset Timer & set Manual Mode
+            
+            if (galleryIndex < 16) {
+                galleryIndex++;
                 updateGallery(galleryIndex);
+            } else {
+                // Si está en la última y da siguiente -> FIN
+                triggerEndSequence();
             }
         }
 
         function manualPrev() {
             handleInteraction();
-            galleryIndex--;
-            if (galleryIndex < 0) galleryIndex = 0; // No loop atrás
-            updateGallery(galleryIndex);
+            if (galleryIndex > 0) {
+                galleryIndex--;
+                updateGallery(galleryIndex);
+            }
         }
 
         function updateGallery(idx) {
             document.querySelectorAll('.gallery-slide').forEach(s => s.classList.remove('active'));
-            document.getElementById(`slide-${idx}`).classList.add('active');
+            const currentSlide = document.getElementById(`slide-${idx}`);
+            if(currentSlide) currentSlide.classList.add('active');
             galleryCounter.innerText = `${idx + 1} / 17`;
         }
 
@@ -494,6 +494,7 @@
         function openPDF() { stopAutoScroll(); pdfModal.classList.add('open'); }
         function closePDF() { pdfModal.classList.remove('open'); handleInteraction(); }
 
+        // --- SECUENCIA FINAL ---
         function triggerEndSequence() {
             if (isEnding) return; 
             isEnding = true;
@@ -511,17 +512,23 @@
 
         function resetAndRestart() {
             scroller.scrollTo({ top: 0, behavior: 'auto' });
+            
+            // Limpieza total
             clearInterval(scrollInterval);
             clearInterval(progressInterval);
             clearInterval(galleryInterval);
             clearTimeout(idleTimeout);
             isGalleryPlaying = false;
+            isEnding = false;
             
+            // Reiniciar Galería al índice 0 para la próxima vuelta
+            updateGallery(0);
+            galleryIndex = 0; 
+
             setTimeout(() => {
                 typedText.innerHTML = '';
                 charIndex = 0;
                 typeWriter();
-                isEnding = false;
                 startAutoScroll();
             }, 1000);
         }
@@ -541,10 +548,11 @@
                 const nextPos = Math.ceil((currentScroll + height) / height) * height;
                 const galleryTop = document.getElementById('gallery').offsetTop;
                 
+                // Si la siguiente sección es la Galería
                 if (Math.abs(nextPos - galleryTop) < 50) {
                     scroller.scrollTo({ top: galleryTop, behavior: 'smooth' });
-                    clearInterval(scrollInterval); 
-                    setTimeout(playGalleryCycle, 1000); 
+                    clearInterval(scrollInterval); // Parar scroll vertical
+                    setTimeout(playGalleryCycle, 1000); // Iniciar galería
                 } 
                 else if (nextPos >= scroller.scrollHeight - 50) {
                     if(!isGalleryPlaying) triggerEndSequence();
@@ -593,14 +601,6 @@
                 if(!isEnding) resetAndRestart(); 
             }, timeoutDuration); 
         }
-
-        // --- SCROLL MANUAL ---
-        scroller.addEventListener('scroll', () => {
-            if (!isAuto) {
-                // En manual, NO hacemos nada al llegar al fondo. 
-                // El usuario debe interactuar con la galería para finalizar o esperar el timeout.
-            }
-        });
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
